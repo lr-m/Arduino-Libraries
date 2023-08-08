@@ -2,6 +2,8 @@
 
 A small library for adding NES-like controllers to Arduino projects. 
 
+Note: Snake game ported from [here](https://github.com/Stiju/arduino_snake)
+
 <img src="https://user-images.githubusercontent.com/47477832/211208584-16ec825f-25d0-44ee-87a5-e9c6302e031c.jpg" width="500">
 
 This library has been tested with the remote seen above, they are all over Aliexpress:
