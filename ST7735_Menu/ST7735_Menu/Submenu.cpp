@@ -151,10 +151,11 @@ void Submenu::addElement(Element *element)
 {
     elements.push_back(element);
     element->setScreen(getScreen());
+    element->setWidth(getScreen()->width());
     element->setTop(getMenuHeight());
     setMenuHeight(getMenuHeight() + element->getHeight());
 
-    if (getMenuHeight() > SCREEN_HEIGHT)
+    if (getMenuHeight() > getScreen()->height())
     {
         setScrollable(true);
     }
@@ -205,7 +206,7 @@ void Submenu::moveUp()
                             }
 
                             // Check the element isn't above the view window
-                            if ((elements[i]->getTop() + elements[i]->getHeight()) > getBaseDisplayHeight() + SCREEN_HEIGHT)
+                            if ((elements[i]->getTop() + elements[i]->getHeight()) > getBaseDisplayHeight() + getScreen()->height())
                             {
                                 continue;
                             }
@@ -225,13 +226,13 @@ void Submenu::moveUp()
                 if (elements[selectedElementIndex]->getTop() < getBaseDisplayHeight())
                 {
                     // Get all the elements above that fit into the screen space
-                    setBaseDisplayHeight(getBaseDisplayHeight() - SCREEN_HEIGHT);
+                    setBaseDisplayHeight(getBaseDisplayHeight() - getScreen()->height());
 
                     // Get the highest point of all the elements that fit on the screen, this needs to be at '0'
                     int highest_visible = INT_MAX;
                     for (int i = 0; i < elements.size(); i++)
                     {
-                        elements[i]->setDisplayOffset(elements[i]->getDisplayOffset() + SCREEN_HEIGHT);
+                        elements[i]->setDisplayOffset(elements[i]->getDisplayOffset() + getScreen()->height());
                         if (elements[i]->getTop() > getBaseDisplayHeight())
                         {
                             if (elements[i]->getTop() < highest_visible)
@@ -338,7 +339,7 @@ void Submenu::drawMenu()
     {
         for (int i = 0; i < elements.size(); i++)
         {
-            elements[i]->setWidth(SCREEN_WIDTH - SCROLLBAR_WIDTH - SCROLLBAR_PADDING);
+            elements[i]->setWidth(getScreen()->width() - SCROLLBAR_WIDTH - SCROLLBAR_PADDING);
         }
     }
 
@@ -355,7 +356,7 @@ void Submenu::drawMenu()
         }
 
         // Check the element isn't above the view window
-        if ((elements[i]->getTop() + elements[i]->getHeight()) > getBaseDisplayHeight() + SCREEN_HEIGHT)
+        if ((elements[i]->getTop() + elements[i]->getHeight()) > getBaseDisplayHeight() + getScreen()->height())
         {
             continue;
         }
@@ -384,10 +385,15 @@ void Submenu::drawMenu()
 // Draws the scrollbar based on the amount of the menu being displayed
 void Submenu::drawScrollbar(int top, int bottom)
 {
-    getScreen()->fillRoundRect(SCREEN_WIDTH - SCROLLBAR_WIDTH, 0, SCROLLBAR_WIDTH, SCREEN_HEIGHT, 2, NOT_SELECTED_COLOUR);
-    int top_y = map(top, 0, getMenuHeight(), 0, SCREEN_HEIGHT);
-    int bar_height = map(bottom, 0, getMenuHeight(), 0, SCREEN_HEIGHT) - top_y;
-    getScreen()->fillRoundRect(SCREEN_WIDTH - SCROLLBAR_WIDTH, top_y, SCROLLBAR_WIDTH, bar_height, 2, SELECTED_COLOUR);
+    // draw the background
+    getScreen()->fillRoundRect(getScreen()->width() - SCROLLBAR_WIDTH, 0, SCROLLBAR_WIDTH, getScreen()->height(), 2, NOT_SELECTED_COLOUR);
+
+    // calculate bar position and height
+    int top_y = map(top, 0, getMenuHeight(), 0, getScreen()->height());
+    int bar_height = map(bottom, 0, getMenuHeight(), 0, getScreen()->height()) - top_y;
+
+    // draw the bar
+    getScreen()->fillRoundRect(getScreen()->width() - SCROLLBAR_WIDTH, top_y, SCROLLBAR_WIDTH, bar_height, 2, SELECTED_COLOUR);
 }
 
 // Indicates the user wants to go back
@@ -428,7 +434,7 @@ int Submenu::getHeight()
 }
 
 // get byte representation of subcomponents
-bool Submenu::serialize(byte *buffer, int *byte_index)
+bool Submenu::serialize(uint8_t *buffer, int *byte_index)
 {
     for (int i = 0; i < elements.size(); i++)
     {
@@ -437,7 +443,7 @@ bool Submenu::serialize(byte *buffer, int *byte_index)
 }
 
 // load subcomponent values from byte representation
-bool Submenu::deserialize(byte *buffer, int *byte_index)
+bool Submenu::deserialize(uint8_t *buffer, int *byte_index)
 {
     for (int i = 0; i < elements.size(); i++)
     {
@@ -446,11 +452,12 @@ bool Submenu::deserialize(byte *buffer, int *byte_index)
 }
 
 // set all subcomponents to default and return to root menu
-void Submenu::toDefault(){
+void Submenu::toDefault()
+{
     for (int i = 0; i < elements.size(); i++)
-	{
-		elements[i]->toDefault();
-	}
+    {
+        elements[i]->toDefault();
+    }
     entered = false;
     setDrawn(false);
 }

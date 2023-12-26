@@ -24,7 +24,7 @@ decode_results results;
 // Instantiate menu
 Menu* menu;
 
-const char* selector_test_labels[] = {"Option 1", "Option 2", "Option 3", "Option 4", "Option 5"};
+const char* selector_test_labels[] = {"1", "234", "56789", "0123456", "789012345"};
 int selector_test_options[] = {0, 1, 2, 3, 4};
 
 Button *test_button_1, *test_button_2, *test_button_3, *test_button_4, *mix_button, *save_button, *clear_settings_button;
@@ -45,50 +45,50 @@ class TestPage : public Page
     void pagePress() override;
     void pageBack() override;
     void pageDisplay() override;
-    bool pageSerialize(byte* buffer, int* index) override;
-    bool pageDeserialize(byte* buffer, int* index) override;
+    bool pageSerialize(uint8_t* buffer, int* index) override;
+    bool pageDeserialize(uint8_t* buffer, int* index) override;
     void pageDefault() override{};
 };
 
 TestPage::TestPage(const char* label) {setLabel(label);}
 
 void TestPage::pageMoveUp(){
-  getScreen()->fillRect(0, 0, SCREEN_WIDTH, 20, RED);
+  getScreen()->fillRect(0, 0, getScreen()->width(), 20, RED);
   getScreen()->setCursor(0,0);
   getScreen()->setTextColor(BLACK);
   getScreen()->print("Up arrow pressed!");
 }
 
 void TestPage::pageMoveDown(){
-  getScreen()->fillRect(0, 0, SCREEN_WIDTH, 20, RED);
+  getScreen()->fillRect(0, 0, getScreen()->width(), 20, RED);
   getScreen()->setCursor(0,0);
   getScreen()->setTextColor(BLACK);
   getScreen()->print("Down arrow pressed!");
 }
 
 void TestPage::pageMoveLeft(){
-  getScreen()->fillRect(0, 0, SCREEN_WIDTH, 30, RED);
+  getScreen()->fillRect(0, 0, getScreen()->width(), 30, RED);
   getScreen()->setCursor(0,0);
   getScreen()->setTextColor(BLACK);
   getScreen()->print("Left arrow pressed!");
 }
 
 void TestPage::pageMoveRight(){
-  getScreen()->fillRect(0, 0, SCREEN_WIDTH, 30, RED);
+  getScreen()->fillRect(0, 0, getScreen()->width(), 30, RED);
   getScreen()->setCursor(0,0);
   getScreen()->setTextColor(BLACK);
   getScreen()->print("Right arrow pressed!");
 }
 
 void TestPage::pagePress(){
-  getScreen()->fillRect(0, 0, SCREEN_WIDTH, 30, RED);
+  getScreen()->fillRect(0, 0, getScreen()->width(), 30, RED);
   getScreen()->setCursor(0,0);
   getScreen()->setTextColor(BLACK);
   getScreen()->println("OK pressed!");
 }
 
 void TestPage::pageBack(){
-  getScreen()->fillRect(0, 0, SCREEN_WIDTH, 30, RED);
+  getScreen()->fillRect(0, 0, getScreen()->width(), 30, RED);
   getScreen()->setCursor(0,0);
   getScreen()->setTextColor(BLACK);
   getScreen()->print("Hashtag (back) pressed!");
@@ -96,10 +96,10 @@ void TestPage::pageBack(){
   setEntered(false);
 }
 
-bool TestPage::pageSerialize(byte *buffer, int *index){
+bool TestPage::pageSerialize(uint8_t *buffer, int *index){
 }
 
-bool TestPage::pageDeserialize(byte *buffer, int *index){
+bool TestPage::pageDeserialize(uint8_t *buffer, int *index){
 }
 
 void TestPage::pageDisplay(){
@@ -245,7 +245,7 @@ void setup(void) {
   irrecv.enableIRIn(); // Enable IR reciever
 
   tft.initR(INITR_BLACKTAB); // Init ST7735S chip
-  tft.setRotation(1);
+  tft.setRotation(0);
 
   tft.fillScreen(BLACK);
 

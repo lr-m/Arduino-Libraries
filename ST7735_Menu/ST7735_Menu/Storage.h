@@ -1,6 +1,4 @@
 #include <EEPROM.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_ST7735.h>
 
 #define STORAGE_SIZE 512
 
@@ -10,11 +8,11 @@
 class Storage {
     public:
         Storage();
-        void save(byte*);
-        void load(byte*);
+        void save(uint8_t*);
+        void load(uint8_t*);
         void reset();
-        void write(int startAddress, const byte* data, size_t length);
-        void read(int startAddress, byte* data, size_t length);
+        void write(int startAddress, const uint8_t* data, size_t length);
+        void read(int startAddress, uint8_t* data, size_t length);
 };
 
 #endif

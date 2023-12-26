@@ -1,6 +1,6 @@
 #include "Checkbox.h"
 
-Checkbox::Checkbox(const char *label, const char *id, bool starting) : label(label), id(id), Element(CHECKBOX), value(starting), starting(starting) {}
+Checkbox::Checkbox(const char *label, const char *id, bool starting) : label(label), id(id), Element(CHECKBOX), value(false), starting(starting) {}
 
 // Displays the checkbox when its not hovered over/selected
 void Checkbox::display()
@@ -43,7 +43,7 @@ void Checkbox::press()
 }
 
 // serialize checkbox
-bool Checkbox::serialize(byte *buffer, int *byte_index)
+bool Checkbox::serialize(uint8_t *buffer, int *byte_index)
 {
     if (*byte_index < 0)
     {
@@ -66,7 +66,7 @@ bool Checkbox::serialize(byte *buffer, int *byte_index)
 }
 
 // deserialize checkbox
-bool Checkbox::deserialize(byte *buffer, int *byte_index)
+bool Checkbox::deserialize(uint8_t *buffer, int *byte_index)
 {
     if (*byte_index < 0)
     {

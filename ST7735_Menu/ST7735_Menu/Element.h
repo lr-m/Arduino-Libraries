@@ -1,10 +1,6 @@
+#include "Constants.h"
 #include <Adafruit_GFX.h>
 #include <Adafruit_ST7735.h>
-#include <math.h>
-#include <iostream>
-#include <vector>
-#include "Colours.h"
-#include "Constants.h"
 
 #ifndef Element_h
 #define Element_h
@@ -30,8 +26,8 @@ public:
     virtual int getHeight() = 0;
     virtual void toDefault() = 0;
 
-    virtual bool serialize(byte *buffer, int *index) = 0;
-    virtual bool deserialize(byte *buffer, int *index) = 0;
+    virtual bool serialize(uint8_t *buffer, int *index) = 0;
+    virtual bool deserialize(uint8_t *buffer, int *index) = 0;
 
     virtual ~Element() {}
 
@@ -56,7 +52,7 @@ private:
     ElementType type;
     int top;
     int display_offset = 0;
-    int element_width = SCREEN_WIDTH;
+    int element_width = 0;
     Adafruit_ST7735 *screen;
 };
 

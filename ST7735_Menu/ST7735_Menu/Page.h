@@ -1,11 +1,4 @@
-#include <Adafruit_GFX.h>
-#include <Adafruit_ST7735.h>
-#include <math.h>
-#include <iostream>
-#include <vector>
-#include "Colours.h"
 #include "Element.h"
-#include "Constants.h"
 
 #define PAGE_HEIGHT 14
 #define TRIANGLE_HEIGHT 6
@@ -29,8 +22,8 @@ public:
     void moveLeft() override;
     void moveRight() override;
     int getHeight() override;
-    bool serialize(byte *buffer, int *index) override;
-    bool deserialize(byte *buffer, int *index) override;
+    bool serialize(uint8_t *buffer, int *index) override;
+    bool deserialize(uint8_t *buffer, int *index) override;
     void toDefault() override;
 
     virtual void pageMoveUp() = 0;
@@ -40,8 +33,8 @@ public:
     virtual void pagePress() = 0;
     virtual void pageBack() = 0;
     virtual void pageDisplay() = 0;
-    virtual bool pageSerialize(byte *buffer, int *index) = 0;
-    virtual bool pageDeserialize(byte *buffer, int *index) = 0;
+    virtual bool pageSerialize(uint8_t *buffer, int *index) = 0;
+    virtual bool pageDeserialize(uint8_t *buffer, int *index) = 0;
     virtual void pageDefault() = 0;
 
     bool isEntered() const { return entered; }

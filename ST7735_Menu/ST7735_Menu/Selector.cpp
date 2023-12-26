@@ -177,7 +177,7 @@ int Selector::getValue()
 }
 
 // get byte representation of component
-bool Selector::serialize(byte *buffer, int *byte_index)
+bool Selector::serialize(uint8_t *buffer, int *byte_index)
 {
     if (*byte_index < 0)
     {
@@ -194,7 +194,7 @@ bool Selector::serialize(byte *buffer, int *byte_index)
 }
 
 // load value from byte representation
-bool Selector::deserialize(byte *buffer, int *byte_index)
+bool Selector::deserialize(uint8_t *buffer, int *byte_index)
 {
     if (*byte_index < 0)
     {

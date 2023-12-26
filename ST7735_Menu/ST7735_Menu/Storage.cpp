@@ -3,23 +3,23 @@
 Storage::Storage(){EEPROM.begin(STORAGE_SIZE);};
 
 // save the passed buffer into memory
-void Storage::save(byte* buffer){
+void Storage::save(uint8_t* buffer){
     write(0, buffer, STORAGE_SIZE);
 }
 
 // read eeprom into passed buffer
-void Storage::load(byte* buffer){
+void Storage::load(uint8_t* buffer){
     read(0, buffer, STORAGE_SIZE);
 }
 
 // indicate cleared by removing magic bytes
 void Storage::reset(){
-    byte magic_killer[2] = {0};
+    uint8_t magic_killer[2] = {0};
     write(0, magic_killer, 2);
 }
 
 // write data of length at specified index
-void Storage::write(int startAddress, const byte* data, size_t length) {
+void Storage::write(int startAddress, const uint8_t* data, size_t length) {
   for (size_t i = 0; i < length; ++i) {
     EEPROM.write(startAddress + i, data[i]);
   }
@@ -27,7 +27,7 @@ void Storage::write(int startAddress, const byte* data, size_t length) {
 }
 
 // read data into buffer of length at specified index
-void Storage::read(int startAddress, byte* data, size_t length) {
+void Storage::read(int startAddress, uint8_t* data, size_t length) {
   for (size_t i = 0; i < length; ++i) {
     data[i] = EEPROM.read(startAddress + i);
   }

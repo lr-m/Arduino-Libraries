@@ -42,10 +42,11 @@ void Menu::addElement(Element *element)
 	elements.push_back(element);
 	element->setScreen(screen);
 	element->setTop(getMenuHeight());
+	element->setWidth(screen->width());
 	setMenuHeight(getMenuHeight() + element->getHeight());
 
 	// If total menu height overflows screen, make scrollable
-	if (getMenuHeight() > SCREEN_HEIGHT)
+	if (getMenuHeight() > screen->height())
 	{
 		setScrollable(true);
 	}
@@ -58,7 +59,7 @@ void Menu::display()
 	{
 		for (int i = 0; i < elements.size(); i++)
 		{
-			elements[i]->setWidth(SCREEN_WIDTH - SCROLLBAR_WIDTH - SCROLLBAR_PADDING);
+            elements[i]->setWidth(screen->width() - SCROLLBAR_WIDTH - SCROLLBAR_PADDING);
 		}
 	}
 
@@ -75,7 +76,7 @@ void Menu::display()
 		}
 
 		// Check the element isn't above the view window
-		if ((elements[i]->getTop() + elements[i]->getHeight()) > getBaseDisplayHeight() + SCREEN_HEIGHT)
+		if ((elements[i]->getTop() + elements[i]->getHeight()) > getBaseDisplayHeight() + screen->height())
 		{
 			continue;
 		}
@@ -107,14 +108,14 @@ void Menu::display()
 void Menu::drawScrollbar(int top, int bottom)
 {
 	// draw the background
-	screen->fillRoundRect(SCREEN_WIDTH - SCROLLBAR_WIDTH, 0, SCROLLBAR_WIDTH, SCREEN_HEIGHT, 2, NOT_SELECTED_COLOUR);
+	screen->fillRoundRect(screen->width() - SCROLLBAR_WIDTH, 0, SCROLLBAR_WIDTH, screen->height(), 2, NOT_SELECTED_COLOUR);
 
 	// calculate bar position and height
-	int top_y = map(top, 0, getMenuHeight(), 0, SCREEN_HEIGHT);
-	int bar_height = map(bottom, 0, getMenuHeight(), 0, SCREEN_HEIGHT) - top_y;
+	int top_y = map(top, 0, getMenuHeight(), 0, screen->height());
+	int bar_height = map(bottom, 0, getMenuHeight(), 0, screen->height()) - top_y;
 
 	// draw the bar
-	screen->fillRoundRect(SCREEN_WIDTH - SCROLLBAR_WIDTH, top_y, SCROLLBAR_WIDTH, bar_height, 2, SELECTED_COLOUR);
+	screen->fillRoundRect(screen->width() - SCROLLBAR_WIDTH, top_y, SCROLLBAR_WIDTH, bar_height, 2, SELECTED_COLOUR);
 }
 
 // gets the selected value from the selector with the target id, if submenu, recursively iterate through them
@@ -302,7 +303,7 @@ void Menu::moveUp()
 							}
 
 							// Check the element isn't above the view window
-							if ((elements[i]->getTop() + elements[i]->getHeight()) > getBaseDisplayHeight() + SCREEN_HEIGHT)
+							if ((elements[i]->getTop() + elements[i]->getHeight()) > getBaseDisplayHeight() + screen->height())
 							{
 								continue;
 							}
@@ -322,13 +323,13 @@ void Menu::moveUp()
 				if (elements[selectedElementIndex]->getTop() < getBaseDisplayHeight())
 				{
 					// Get all the elements above that fit into the screen space
-					setBaseDisplayHeight(getBaseDisplayHeight() - SCREEN_HEIGHT);
+					setBaseDisplayHeight(getBaseDisplayHeight() - screen->height());
 
 					// Get the highest point of all the elements that fit on the screen, this needs to be at '0'
 					int highest_visible = INT_MAX;
 					for (int i = 0; i < elements.size(); i++)
 					{
-						elements[i]->setDisplayOffset(elements[i]->getDisplayOffset() + SCREEN_HEIGHT);
+						elements[i]->setDisplayOffset(elements[i]->getDisplayOffset() + screen->height());
 						if (elements[i]->getTop() > getBaseDisplayHeight())
 						{
 							if (elements[i]->getTop() < highest_visible)
@@ -431,7 +432,7 @@ void Menu::moveRight()
 }
 
 // Convert menu state to byte string that can be saved in EEPROM
-bool Menu::serialize(byte *buffer)
+bool Menu::serialize(uint8_t *buffer)
 {
 	// init magic
 	buffer[0] = 0x12;
@@ -445,7 +446,7 @@ bool Menu::serialize(byte *buffer)
 }
 
 // Load menu values from saved state
-bool Menu::deserialize(byte *buffer)
+bool Menu::deserialize(uint8_t *buffer)
 {
 	if (!(buffer[0] == 0x12 && buffer[1] == 0x34))
 	{

@@ -1,16 +1,11 @@
-#include <Adafruit_GFX.h>
-#include <Adafruit_ST7735.h>
-#include <math.h>
-#include <iostream>
 #include <vector>
-#include "Colours.h"
-#include "Constants.h"
+#include <climits>
+#include "Element.h"
 #include "Button.h"
 #include "Selector.h"
 #include "Checkbox.h"
 #include "Slider.h"
 #include "Page.h"
-#include <climits>
 
 #define SUBMENU_HEIGHT 14
 

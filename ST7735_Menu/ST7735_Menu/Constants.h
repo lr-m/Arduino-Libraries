@@ -1,12 +1,10 @@
-#include <Colours.h>
-
-#define SCREEN_WIDTH 160
-#define SCREEN_HEIGHT 128
+#include <stdint.h>
+#include "Colours.h"
 
 #define MENU_SEP 2
 
-#define SELECTED_COLOUR GOLD
-#define NOT_SELECTED_COLOUR DARK_GREY // PURPLE
+#define SELECTED_COLOUR VIOLET
+#define NOT_SELECTED_COLOUR DARK_GREY
 #define SELECTED_TEXT_COLOUR WHITE
 #define NOT_SELECTED_TEXT_COLOUR DARK_GREY
 #define BACKGROUND_COLOUR BLACK

@@ -1,11 +1,4 @@
-#include <Adafruit_GFX.h>
-#include <Adafruit_ST7735.h>
-#include <math.h>
-#include <iostream>
-#include <vector>
-#include "Colours.h"
 #include "Element.h"
-#include "Constants.h"
 
 #define BUTTON_HEIGHT 14
 #define TRIANGLE_HEIGHT 6
@@ -29,8 +22,8 @@ public:
     int getHeight() override;
     void toDefault() override{};
 
-    bool serialize(byte *buffer, int *index) override{};
-    bool deserialize(byte *buffer, int *index) override{};
+    bool serialize(uint8_t *buffer, int *index) override{};
+    bool deserialize(uint8_t *buffer, int *index) override{};
 
 private:
     const char *label;

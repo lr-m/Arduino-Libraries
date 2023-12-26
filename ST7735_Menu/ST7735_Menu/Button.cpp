@@ -3,8 +3,7 @@
 Button::Button(const char *label, void (*onClick)()) : label(label), onClick(onClick), Element(BUTTON) {}
 
 // Displays the button when its not hovered over/selected
-void Button::display()
-{
+void Button::display() {
     int buttonX = MENU_SEP;
     int buttonY = getTop() + getDisplayOffset();
     int buttonWidth = getWidth() - 2 * MENU_SEP;
@@ -31,8 +30,7 @@ void Button::display()
 }
 
 // Displays the button when it is hovered over/selected
-void Button::displaySelected()
-{
+void Button::displaySelected() {
     int buttonX = MENU_SEP;
     int buttonY = getTop() + getDisplayOffset();
     int buttonWidth = getWidth() - 2 * MENU_SEP;
@@ -57,6 +55,7 @@ void Button::displaySelected()
     getScreen()->setTextColor(NOT_SELECTED_TEXT_COLOUR);
     getScreen()->print(label);
 }
+
 
 // Presses the button, and triggers action function
 void Button::press()

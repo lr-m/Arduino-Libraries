@@ -1,10 +1,7 @@
 // ESPIR_Menu.h
-#include <Adafruit_GFX.h>
-#include <Adafruit_ST7735.h>
-#include <math.h>
-#include <iostream>
 #include <vector>
-#include "Colours.h"
+#include <climits>
+#include "Element.h"
 #include "Checkbox.h"
 #include "Button.h"
 #include "Selector.h"
@@ -13,7 +10,6 @@
 #include "Page.h"
 #include "Slider.h"
 #include "Storage.h"
-#include <climits>
 
 #ifndef Menu_h
 #define Menu_h
@@ -35,8 +31,8 @@ public:
     void moveRight();
     void back();
 
-    bool serialize(byte *buffer);
-    bool deserialize(byte *buffer);
+    bool serialize(uint8_t *buffer);
+    bool deserialize(uint8_t *buffer);
 
     bool getSelectorValue(const char *, int *);
     bool getCheckboxValue(const char *, bool *);
@@ -60,7 +56,7 @@ public:
     void reset();
 
 private:
-    byte buffer[512];
+    uint8_t buffer[512];
     std::vector<Element *> elements;
     size_t selectedElementIndex;
     bool entered;
