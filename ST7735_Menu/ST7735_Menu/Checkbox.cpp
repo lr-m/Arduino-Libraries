@@ -1,6 +1,6 @@
 #include "Checkbox.h"
 
-Checkbox::Checkbox(const char *label, const char *id, bool starting) : label(label), id(id), Element(CHECKBOX), value(false), starting(starting) {}
+Checkbox::Checkbox(const char *label, const char *id, bool starting) : label(label), id(id), Element(CHECKBOX), value(starting), starting(starting) {}
 
 // Displays the checkbox when its not hovered over/selected
 void Checkbox::display()
