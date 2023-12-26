@@ -23,12 +23,17 @@ class Element
 {
 public:
     virtual void displaySelected() = 0;
-    virtual void display() = 0; // Pure virtual function, to be implemented by derived classes
+    virtual void display() = 0;
     virtual void press() = 0;
     virtual void moveLeft() = 0;
     virtual void moveRight() = 0;
     virtual int getHeight() = 0;
-    virtual ~Element() {} // Virtual destructor to support polymorphism
+    virtual void toDefault() = 0;
+
+    virtual bool serialize(byte *buffer, int *index) = 0;
+    virtual bool deserialize(byte *buffer, int *index) = 0;
+
+    virtual ~Element() {}
 
     ElementType getType() const { return type; }
 

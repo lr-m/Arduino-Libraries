@@ -27,7 +27,7 @@ Menu* menu;
 const char* selector_test_labels[] = {"Option 1", "Option 2", "Option 3", "Option 4", "Option 5"};
 int selector_test_options[] = {0, 1, 2, 3, 4};
 
-Button *test_button_1, *test_button_2, *test_button_3, *test_button_4, *mix_button;
+Button *test_button_1, *test_button_2, *test_button_3, *test_button_4, *mix_button, *save_button, *clear_settings_button;
 Selector *test_selector_1, *test_selector_2, *test_selector_3, *test_selector_4, *mix_selector;
 Slider *test_slider_1, *test_slider_2, *test_slider_3, *test_slider_4, *mix_slider;
 Checkbox *test_checkbox_1, *test_checkbox_2, *test_checkbox_3, *test_checkbox_4, *mix_checkbox;
@@ -45,6 +45,9 @@ class TestPage : public Page
     void pagePress() override;
     void pageBack() override;
     void pageDisplay() override;
+    bool pageSerialize(byte* buffer, int* index) override;
+    bool pageDeserialize(byte* buffer, int* index) override;
+    void pageDefault() override{};
 };
 
 TestPage::TestPage(const char* label) {setLabel(label);}
@@ -91,6 +94,12 @@ void TestPage::pageBack(){
   getScreen()->print("Hashtag (back) pressed!");
   delay(500);
   setEntered(false);
+}
+
+bool TestPage::pageSerialize(byte *buffer, int *index){
+}
+
+bool TestPage::pageDeserialize(byte *buffer, int *index){
 }
 
 void TestPage::pageDisplay(){
@@ -164,6 +173,8 @@ void init_menu(){
   slider_submenu = new Submenu("Slider Test", &tft);
   checkbox_submenu = new Submenu("Checkbox Test", &tft);
   mix_submenu = new Submenu("Mix Test", &tft);
+  save_button = new Button("Save Settings", save_settings);
+  clear_settings_button = new Button("Clear Settings", clear_settings);
 
   // init button test submenu
   test_button_1 = new Button("Test button 1", test);
@@ -176,10 +187,10 @@ void init_menu(){
   button_submenu->addElement(test_button_4);
 
   // init selector test submenu
-  test_selector_1 = new Selector("Test selector 1", selector_test_labels, selector_test_options, 5, "test_selector_1");
-  test_selector_2 = new Selector("Test selector 2", selector_test_labels, selector_test_options, 5, "test_selector_2");
-  test_selector_3 = new Selector("Test selector 3", selector_test_labels, selector_test_options, 5, "test_selector_3");
-  test_selector_4 = new Selector("Test selector 4", selector_test_labels, selector_test_options, 5, "test_selector_4");
+  test_selector_1 = new Selector("Test selector 1", selector_test_labels, selector_test_options, 5, "test_selector_1", 0);
+  test_selector_2 = new Selector("Test selector 2", selector_test_labels, selector_test_options, 5, "test_selector_2", 1);
+  test_selector_3 = new Selector("Test selector 3", selector_test_labels, selector_test_options, 5, "test_selector_3", 2);
+  test_selector_4 = new Selector("Test selector 4", selector_test_labels, selector_test_options, 5, "test_selector_4", 3);
   selector_submenu->addElement(test_selector_1);
   selector_submenu->addElement(test_selector_2);
   selector_submenu->addElement(test_selector_3);
@@ -196,19 +207,19 @@ void init_menu(){
   slider_submenu->addElement(test_slider_4);
 
   // init checkbox test_submenu
-  test_checkbox_1 = new Checkbox("Test Checkbox 1", "test_checkbox_1");
-  test_checkbox_2 = new Checkbox("Test Checkbox 2", "test_checkbox_2");
-  test_checkbox_3 = new Checkbox("Test Checkbox 3", "test_checkbox_3");
-  test_checkbox_4 = new Checkbox("Test Checkbox 4", "test_checkbox_4");
+  test_checkbox_1 = new Checkbox("Test Checkbox 1", "test_checkbox_1", false);
+  test_checkbox_2 = new Checkbox("Test Checkbox 2", "test_checkbox_2", true);
+  test_checkbox_3 = new Checkbox("Test Checkbox 3", "test_checkbox_3", false);
+  test_checkbox_4 = new Checkbox("Test Checkbox 4", "test_checkbox_4", true);
   checkbox_submenu->addElement(test_checkbox_1);
   checkbox_submenu->addElement(test_checkbox_2);
   checkbox_submenu->addElement(test_checkbox_3);
   checkbox_submenu->addElement(test_checkbox_4);
 
   mix_button = new Button("Mix Button", test);
-  mix_selector = new Selector("Mix Selector", selector_test_labels, selector_test_options, 5, "mix_selector");
+  mix_selector = new Selector("Mix Selector", selector_test_labels, selector_test_options, 5, "mix_selector", 0);
   mix_slider = new Slider("Mix Slider", 0, 100, 20, 100, "mix_slider");
-  mix_checkbox = new Checkbox("Mix Checkbox", "mix_checkbox");
+  mix_checkbox = new Checkbox("Mix Checkbox", "mix_checkbox", true);
   mix_submenu->addElement(mix_button);
   mix_submenu->addElement(mix_selector);
   mix_submenu->addElement(mix_slider);
@@ -221,8 +232,12 @@ void init_menu(){
   menu->addElement(slider_submenu);
   menu->addElement(checkbox_submenu);
   menu->addElement(mix_submenu);
-}
+  menu->addElement(save_button);
+  menu->addElement(clear_settings_button);
 
+  // If menu is saved, load from EEPROM
+  menu->load();
+}
 
 void setup(void) { 
   Serial.begin(115200);
@@ -240,12 +255,16 @@ void setup(void) {
 }
 
 void test(){
-  Serial.println("button pressed");
+  Serial.println("test button pressed");
 }
 
-int hello = 0;
-int hello2 = 0;
-int hello3 = 0;
+void save_settings(){
+  menu->save();
+}
+
+void clear_settings(){
+  menu->reset();
+}
 
 void loop() {
     // IR receive loop

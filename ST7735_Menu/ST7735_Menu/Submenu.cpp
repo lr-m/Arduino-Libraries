@@ -16,7 +16,7 @@ void Submenu::display()
     }
 
     // Draw the label
-    getScreen()->setCursor(MENU_SEP + 16, (getTop() + getDisplayOffset()) + (BUTTON_HEIGHT - 8) / 2); // Adjust the cursor position
+    getScreen()->setCursor(MENU_SEP + SUBMENU_LABEL_X_OFFSET, (getTop() + getDisplayOffset()) + (BUTTON_HEIGHT - 8) / 2); // Adjust the cursor position
     getScreen()->setTextColor(SELECTED_TEXT_COLOUR);
     getScreen()->print(label);
 }
@@ -35,7 +35,7 @@ void Submenu::displaySelected()
     }
 
     // Draw the label
-    getScreen()->setCursor(MENU_SEP + 16, (getTop() + getDisplayOffset()) + (BUTTON_HEIGHT - 8) / 2); // Adjust the cursor position
+    getScreen()->setCursor(MENU_SEP + SUBMENU_LABEL_X_OFFSET, (getTop() + getDisplayOffset()) + (BUTTON_HEIGHT - 8) / 2); // Adjust the cursor position
     getScreen()->setTextColor(NOT_SELECTED_TEXT_COLOUR);
     getScreen()->print(label);
 }
@@ -97,12 +97,11 @@ bool Submenu::getCheckboxValue(const char *target_id, bool *destination)
 
 bool Submenu::getSliderValue(const char *target_id, int *destination)
 {
-    Serial.println("SUBMENU SLIDER");
     for (int i = 0; i < elements.size(); i++)
     {
         if (elements[i]->getType() == SUBMENU)
         {
-            
+
             // recursively search the submenu
             Submenu *submenu = static_cast<Submenu *>(elements[i]);
             if (submenu->getSliderValue(target_id, destination))
@@ -426,4 +425,32 @@ void Submenu::back()
 int Submenu::getHeight()
 {
     return SUBMENU_HEIGHT + MENU_SEP;
+}
+
+// get byte representation of subcomponents
+bool Submenu::serialize(byte *buffer, int *byte_index)
+{
+    for (int i = 0; i < elements.size(); i++)
+    {
+        elements[i]->serialize(buffer, byte_index);
+    }
+}
+
+// load subcomponent values from byte representation
+bool Submenu::deserialize(byte *buffer, int *byte_index)
+{
+    for (int i = 0; i < elements.size(); i++)
+    {
+        elements[i]->deserialize(buffer, byte_index);
+    }
+}
+
+// set all subcomponents to default and return to root menu
+void Submenu::toDefault(){
+    for (int i = 0; i < elements.size(); i++)
+	{
+		elements[i]->toDefault();
+	}
+    entered = false;
+    setDrawn(false);
 }

@@ -28,12 +28,17 @@ public:
     void moveLeft() override;
     void moveRight() override;
     int getHeight() override;
+    void toDefault() override { value = starting; };
+
+    bool serialize(byte* buffer, int* index) override;
+    bool deserialize(byte* buffer, int* index) override;
 
     void drawSlider();
     void drawRangeLabels(bool highlighted);
     
     const char *getId() const { return id; }
     int getValue() const { return value; }
+    void setValue(int new_value) { value = new_value; }
 
 private:
     const char *label;
@@ -42,6 +47,7 @@ private:
     int high;
     int low;
     int step;
+    int starting;
 };
 
 #endif

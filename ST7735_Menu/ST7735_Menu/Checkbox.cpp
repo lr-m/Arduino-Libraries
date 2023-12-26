@@ -1,6 +1,6 @@
 #include "Checkbox.h"
 
-Checkbox::Checkbox(const char *label, const char *id) : label(label), id(id), Element(CHECKBOX), value(false) {}
+Checkbox::Checkbox(const char *label, const char *id, bool starting) : label(label), id(id), Element(CHECKBOX), value(starting), starting(starting) {}
 
 // Displays the checkbox when its not hovered over/selected
 void Checkbox::display()
@@ -42,18 +42,48 @@ void Checkbox::press()
     drawCheckbox();
 }
 
-// Moves left within the checkbox
-void Checkbox::moveLeft()
+// serialize checkbox
+bool Checkbox::serialize(byte *buffer, int *byte_index)
 {
+    if (*byte_index < 0)
+    {
+        return false;
+    }
+
+    if (getValue())
+    {
+        buffer[*byte_index] = 1;
+    }
+    else
+    {
+        buffer[*byte_index] = 0;
+    }
+
+    // Update byte index for the next operation
+    (*byte_index)++;
+
+    return true;
 }
 
-// Moves right within the checkbox
-void Checkbox::moveRight()
+// deserialize checkbox
+bool Checkbox::deserialize(byte *buffer, int *byte_index)
 {
-}
+    if (*byte_index < 0)
+    {
+        return false;
+    }
 
-// Gets the height of the checkbox in the menu
-int Checkbox::getHeight()
-{
-    return CHECKBOX_HEIGHT;
+    if (buffer[*byte_index] == 0)
+    {
+        setValue(false);
+    }
+    else
+    {
+        setValue(true);
+    }
+
+    // Update byte index for the next operation
+    (*byte_index)++;
+
+    return true;
 }

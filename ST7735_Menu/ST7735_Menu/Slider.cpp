@@ -1,6 +1,24 @@
 #include "Slider.h"
 
-Slider::Slider(const char *label, int low, int high, int step, int start, const char *id) : value(start), label(label), low(low), high(high), id(id), step(step), Element(SLIDER) {}
+void storeIntInBuffer(int value, byte* buffer, int offset) {
+    for (int i = 0; i < sizeof(int); ++i) {
+        buffer[offset + i] = static_cast<byte>(value & 0xFF);
+        value >>= 8;
+    }
+}
+
+int parseIntFromBuffer(const byte* buffer, int offset) {
+    int result = 0;
+
+    for (int i = 0; i < sizeof(int); ++i) {
+        result |= static_cast<int>(buffer[offset + i]) << (8 * i);
+    }
+
+    return result;
+}
+
+
+Slider::Slider(const char *label, int low, int high, int step, int start, const char *id) : value(start), label(label), low(low), high(high), id(id), step(step), Element(SLIDER), starting(start) {}
 
 // Displays the slider when its not hovered over/selected
 void Slider::display()
@@ -109,4 +127,35 @@ void Slider::moveRight()
 int Slider::getHeight()
 {
     return SLIDER_TITLE_HEIGHT + SLIDER_HEIGHT + MENU_SEP + SLIDER_MIN_MAX_LABEL_HEIGHT + SLIDER_BOTTOM_PADDING;
+}
+
+// get byte representation of component
+bool Slider::serialize(byte* buffer, int* byte_index){
+    if (*byte_index < 0) {
+        return false;
+    }
+
+    // store the number of steps from default
+    storeIntInBuffer(getValue(), buffer, *byte_index);
+
+    // Update byte index for the next operation
+    (*byte_index)+=4;
+
+    return true;
+}
+
+// load value from byte representation
+bool Slider::deserialize(byte* buffer, int* byte_index){
+    if (*byte_index < 0) {
+        return false;
+    }
+
+    // store the number of steps from default
+    int loaded = parseIntFromBuffer(buffer, *byte_index);
+    setValue(loaded);
+
+    // Update byte index for the next operation
+    (*byte_index)+=4;
+
+    return true;
 }

@@ -12,6 +12,7 @@
 #include "Constants.h"
 #include "Page.h"
 #include "Slider.h"
+#include "Storage.h"
 #include <climits>
 
 #ifndef Menu_h
@@ -25,7 +26,7 @@ class Menu
 public:
     Menu(Adafruit_ST7735 *display);
     void addElement(Element *element);
-    
+
     void display();
     void moveUp();
     void moveDown();
@@ -33,6 +34,9 @@ public:
     void moveLeft();
     void moveRight();
     void back();
+
+    bool serialize(byte *buffer);
+    bool deserialize(byte *buffer);
 
     bool getSelectorValue(const char *, int *);
     bool getCheckboxValue(const char *, bool *);
@@ -49,8 +53,14 @@ public:
     void setScrollable(bool is_scrollable) { scrollable = is_scrollable; }
 
     void drawScrollbar(int top, int bottom);
+    void toDefault();
+
+    void save();
+    void load();
+    void reset();
 
 private:
+    byte buffer[512];
     std::vector<Element *> elements;
     size_t selectedElementIndex;
     bool entered;
@@ -59,6 +69,7 @@ private:
     int menu_height = 0;
     bool scrollable = false;
     int end_display_height = 0;
+    Storage* storage;
 };
 
 #endif

@@ -24,19 +24,27 @@
 class Selector : public Element
 {
 public:
-    Selector(const char *label, const char **option_labels, int *option_values, int option_count, const char *id);
+    Selector(const char *label, const char **option_labels, int *option_values, int option_count, const char *id, uint8_t starting);
 
     void display() override;
     void displaySelected() override;
-    void press() override;
+    void press() override{};
     void moveLeft() override;
     void moveRight() override;
     int getHeight() override;
 
+    bool serialize(byte *buffer, int *index) override;
+    bool deserialize(byte *buffer, int *index) override;
+
     void drawItems();
     void drawSingleItem(int index);
 
+    uint8_t getSelectedIndex() const { return selectedOptionIndex; }
+    void setSelectedIndex(uint8_t new_selected_option_index) { selectedOptionIndex = new_selected_option_index; }
+
     int getValue();
+    void toDefault() override { selectedOptionIndex = starting; };
+
     const char *getId() const { return id; }
 
 private:
@@ -45,8 +53,9 @@ private:
     const char *id;
     int *option_values;
     int *value;
-    size_t selectedOptionIndex;
+    uint8_t selectedOptionIndex;
     int option_count;
+    uint8_t starting;
 };
 
 #endif

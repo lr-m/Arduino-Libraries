@@ -17,13 +17,17 @@
 class Checkbox : public Element
 {
 public:
-    Checkbox(const char *label, const char *id);
+    Checkbox(const char *label, const char *id, bool starting);
     void display() override;
     void displaySelected() override;
     void press() override;
-    void moveLeft() override;
-    void moveRight() override;
-    int getHeight() override;
+    void moveLeft() override{};
+    void moveRight() override{};
+    int getHeight() override { return CHECKBOX_HEIGHT; };
+    void toDefault() override{ value = starting; };
+
+    bool serialize(byte *buffer, int *index) override;
+    bool deserialize(byte *buffer, int *index) override;
 
     void drawCheckbox();
     const char *getId() const { return id; }
@@ -34,6 +38,7 @@ private:
     const char *label;
     const char *id;
     bool value;
+    bool starting;
 };
 
 #endif

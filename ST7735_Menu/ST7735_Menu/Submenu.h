@@ -23,6 +23,8 @@
 #define SCROLLBAR_WIDTH 5
 #define SCROLLBAR_PADDING 2
 
+#define SUBMENU_LABEL_X_OFFSET 16
+
 #ifndef Submenu_h
 #define Submenu_h
 
@@ -42,6 +44,10 @@ public:
     void moveLeft() override;
     void moveRight() override;
     int getHeight() override;
+    void toDefault() override;
+
+    bool serialize(byte *buffer, int *index) override;
+    bool deserialize(byte *buffer, int *index) override;
 
     void moveUp();
     void moveDown();

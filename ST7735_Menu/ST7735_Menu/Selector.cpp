@@ -1,6 +1,6 @@
 #include "Selector.h"
 
-Selector::Selector(const char *label, const char **option_labels, int *option_values, int option_count, const char *id) : id(id), option_count(option_count), option_labels(option_labels), option_values(option_values), label(label), selectedOptionIndex(0), Element(SELECTOR) {}
+Selector::Selector(const char *label, const char **option_labels, int *option_values, int option_count, const char *id, uint8_t starting) : id(id), option_count(option_count), option_labels(option_labels), option_values(option_values), label(label), selectedOptionIndex(starting), Element(SELECTOR), starting(starting) {}
 
 // This displays the selector as if it is not being hovered over/selected
 void Selector::display()
@@ -105,11 +105,6 @@ void Selector::drawSingleItem(int index)
     }
 }
 
-// Indicates a press
-void Selector::press()
-{
-}
-
 // Moves the seleted item to be the item on the left of the current (or wrap around)
 void Selector::moveLeft()
 {
@@ -179,4 +174,38 @@ int Selector::getHeight()
 int Selector::getValue()
 {
     return option_values[selectedOptionIndex];
+}
+
+// get byte representation of component
+bool Selector::serialize(byte *buffer, int *byte_index)
+{
+    if (*byte_index < 0)
+    {
+        return false;
+    }
+
+    // store the selected index (uint8_t)
+    buffer[*byte_index] = getSelectedIndex();
+
+    // Update byte index for the next operation
+    (*byte_index)++;
+
+    return true;
+}
+
+// load value from byte representation
+bool Selector::deserialize(byte *buffer, int *byte_index)
+{
+    if (*byte_index < 0)
+    {
+        return false;
+    }
+
+    // store the selected index (uint8_t)
+    setSelectedIndex(buffer[*byte_index]);
+
+    // Update byte index for the next operation
+    (*byte_index)++;
+
+    return true;
 }

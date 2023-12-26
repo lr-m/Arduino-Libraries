@@ -33,6 +33,7 @@ int strcmp(const char *str1, const char *str2)
 
 Menu::Menu(Adafruit_ST7735 *screen) : selectedElementIndex(0), entered(false), screen(screen)
 {
+	storage = new Storage();
 }
 
 // Adds an element to the menu
@@ -111,7 +112,7 @@ void Menu::drawScrollbar(int top, int bottom)
 	// calculate bar position and height
 	int top_y = map(top, 0, getMenuHeight(), 0, SCREEN_HEIGHT);
 	int bar_height = map(bottom, 0, getMenuHeight(), 0, SCREEN_HEIGHT) - top_y;
-	
+
 	// draw the bar
 	screen->fillRoundRect(SCREEN_WIDTH - SCROLLBAR_WIDTH, top_y, SCROLLBAR_WIDTH, bar_height, 2, SELECTED_COLOUR);
 }
@@ -257,7 +258,7 @@ void Menu::back()
 
 // Indicates the user wants to move to the element above (or wrap to the element below)
 void Menu::moveUp()
-{	
+{
 	if (entered && elements[selectedElementIndex]->getType() == SUBMENU)
 	{
 		// If in a submenu, navigate this instead of base
@@ -412,7 +413,6 @@ void Menu::moveDown()
 // Indicates the user wants to move left within the element
 void Menu::moveLeft()
 {
-	// elements[selectedElementIndex]->moveLeft();
 	// make sure not passing into unentered submenu
 	if (entered || (elements[selectedElementIndex]->getType() != SUBMENU))
 	{
@@ -423,10 +423,67 @@ void Menu::moveLeft()
 // Indicates the user wants to move right within the element
 void Menu::moveRight()
 {
-	// elements[selectedElementIndex]->moveRight();
 	// make sure not passing into unentered submenu
 	if (entered || (elements[selectedElementIndex]->getType() != SUBMENU))
 	{
 		elements[selectedElementIndex]->moveRight();
 	}
+}
+
+// Convert menu state to byte string that can be saved in EEPROM
+bool Menu::serialize(byte *buffer)
+{
+	// init magic
+	buffer[0] = 0x12;
+	buffer[1] = 0x34;
+
+	int byte_index = 2;
+	for (int i = 0; i < elements.size(); i++)
+	{
+		elements[i]->serialize(buffer, &byte_index);
+	}
+}
+
+// Load menu values from saved state
+bool Menu::deserialize(byte *buffer)
+{
+	if (!(buffer[0] == 0x12 && buffer[1] == 0x34))
+	{
+		// invalid magic, menu probably not serialised
+		return false;
+	}
+	int byte_index = 2;
+	for (int i = 0; i < elements.size(); i++)
+	{
+		elements[i]->deserialize(buffer, &byte_index);
+	}
+	return true;
+}
+
+// Reset all menu components to default values
+void Menu::toDefault(){
+	for (int i = 0; i < elements.size(); i++)
+	{
+		elements[i]->toDefault();
+	}
+	entered = false;
+	display();
+}
+
+// serialize menu and save into storage
+void Menu::save(){
+	serialize(buffer);
+	storage->save(buffer);
+}
+
+// load serialized menu from storage and deserialize into menu components
+void Menu::load(){
+	storage->load(buffer);
+	deserialize(buffer);
+}
+
+// reset all components of the menu to default values and return to menu root
+void Menu::reset(){
+	storage->reset();
+	toDefault();
 }
